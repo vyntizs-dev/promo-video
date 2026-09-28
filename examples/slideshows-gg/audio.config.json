@@ -1,0 +1,270 @@
+{
+  "bpm": 128.95,
+  "end": 15.0,
+  "marks": {
+    "C1": 4,
+    "C2": 8,
+    "C3": 16,
+    "C4": 24,
+    "C5": 28
+  },
+  "drop_mark": "C2",
+  "stop_mark": "C5",
+  "echo": {
+    "repeats": 4,
+    "gains": [
+      0.5,
+      0.3,
+      0.17,
+      0.09
+    ],
+    "lowpass": [
+      3200,
+      1900,
+      1100,
+      700
+    ]
+  },
+  "bed_volume": 0.9,
+  "sfx_dir": "assets/sfx",
+  "tracks": {
+    "afterdark": {
+      "src": "assets/music/src/afterdark.mp3",
+      "drop": 34.162,
+      "bpm": 128.95
+    },
+    "runway": {
+      "src": "assets/music/src/runway.mp3",
+      "drop": 22.35,
+      "bpm": 129.77
+    }
+  },
+  "cues": [
+    {
+      "name": "cloud1",
+      "file": "cloud-whoosh",
+      "at": "0",
+      "dur": 1.6,
+      "vol": 0.5
+    },
+    {
+      "name": "swish1",
+      "file": "swish",
+      "at": "0.24",
+      "dur": 0.6,
+      "vol": 0.28
+    },
+    {
+      "name": "swish2",
+      "file": "swish",
+      "at": "0.5",
+      "dur": 0.6,
+      "vol": 0.24
+    },
+    {
+      "name": "shim1",
+      "file": "shimmer",
+      "at": "1.06",
+      "dur": 1.4,
+      "vol": 0.35
+    },
+    {
+      "name": "zoom",
+      "file": "swoosh-big",
+      "at": "C1 - 0.48",
+      "dur": 1.2,
+      "vol": 0.5
+    },
+    {
+      "name": "riser1",
+      "file": "riser",
+      "at": "C2 - 2.0",
+      "dur": 2.0,
+      "vol": 0.4
+    },
+    {
+      "name": "type",
+      "file": "type",
+      "at": "C1 + 0.0612*(C2 - C1)",
+      "dur": 1.6,
+      "vol": 0.3
+    },
+    {
+      "name": "tap1",
+      "file": "tap",
+      "at": "C1 + 0.2516*(C2 - C1)",
+      "dur": 0.5,
+      "vol": 0.5
+    },
+    {
+      "name": "tap2",
+      "file": "tap",
+      "at": "C1 + 0.4911*(C2 - C1)",
+      "dur": 0.5,
+      "vol": 0.4
+    },
+    {
+      "name": "click",
+      "file": "click",
+      "at": "C1 + 0.872*(C2 - C1)",
+      "dur": 0.48,
+      "vol": 0.55
+    },
+    {
+      "name": "drop",
+      "file": "subhit",
+      "at": "C2",
+      "dur": 2.5,
+      "vol": 0.55
+    },
+    {
+      "name": "shim2",
+      "file": "shimmer",
+      "at": "C2 + 0.015",
+      "dur": 1.4,
+      "vol": 0.32
+    },
+    {
+      "name": "shuffle",
+      "file": "shuffle",
+      "at": "C2 + 0.045",
+      "dur": 1.2,
+      "vol": 0.4
+    },
+    {
+      "name": "shut",
+      "file": "shutter",
+      "at": "C2 + k*B",
+      "for": {
+        "k": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "dur": 0.44,
+      "vol": 0.28
+    },
+    {
+      "name": "ping1",
+      "file": "ping",
+      "at": "C2 + 5*B + 0.1",
+      "dur": 1.2,
+      "vol": 0.4
+    },
+    {
+      "name": "whip",
+      "file": "swish",
+      "at": "C3 - 0.21",
+      "dur": 0.6,
+      "vol": 0.5
+    },
+    {
+      "name": "chips",
+      "file": "tap",
+      "at": "C3 + 2*B + 0.07",
+      "dur": 0.5,
+      "vol": 0.35
+    },
+    {
+      "name": "flick",
+      "file": "flick",
+      "at": "C3 + (2 + k)*B",
+      "for": {
+        "k": [
+          1,
+          2,
+          3
+        ]
+      },
+      "dur": 0.46,
+      "vol": 0.4
+    },
+    {
+      "name": "swipe",
+      "file": "flick",
+      "at": "C3 + (5.5 + 0.5*k)*B",
+      "for": {
+        "k": [
+          1,
+          2,
+          3
+        ]
+      },
+      "dur": 0.46,
+      "vol": 0.36
+    },
+    {
+      "name": "cloud2",
+      "file": "cloud-whoosh",
+      "at": "C4 - 0.506",
+      "dur": 1.6,
+      "vol": 0.55
+    },
+    {
+      "name": "riser2",
+      "file": "riser",
+      "at": "C5 - 2.0",
+      "dur": 2.0,
+      "vol": 0.4
+    },
+    {
+      "name": "tap3",
+      "file": "tap",
+      "at": "C4 + 0.134",
+      "dur": 0.5,
+      "vol": 0.4
+    },
+    {
+      "name": "tap4",
+      "file": "tap",
+      "at": "C4 + 0.274",
+      "dur": 0.5,
+      "vol": 0.35
+    },
+    {
+      "name": "suck",
+      "file": "swoosh-big",
+      "at": "C5 - 0.463",
+      "dur": 1.2,
+      "vol": 0.36
+    },
+    {
+      "name": "boom",
+      "file": "boom",
+      "at": "C5",
+      "dur": 2.2,
+      "vol": 0.55
+    },
+    {
+      "name": "tail",
+      "file": "tail",
+      "at": "C5 + 0.05",
+      "dur": 2.2,
+      "vol": 0.45
+    },
+    {
+      "name": "shim3",
+      "file": "shimmer",
+      "at": "C5 + 0.137",
+      "dur": 1.4,
+      "vol": 0.4
+    },
+    {
+      "name": "tap5",
+      "file": "tap",
+      "at": "C5 + 0.917",
+      "dur": 0.5,
+      "vol": 0.45
+    },
+    {
+      "name": "ping2",
+      "file": "ping",
+      "at": "C5 + 1.23",
+      "dur": 1.2,
+      "vol": 0.35
+    }
+  ]
+}

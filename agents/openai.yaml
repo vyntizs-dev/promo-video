@@ -1,0 +1,4 @@
+interface:
+  display_name: "Promo Video"
+  short_description: "Showreel-grade promo videos from your product, beat-cut and rendered with HyperFrames"
+  default_prompt: "START PROMO VIDEO"

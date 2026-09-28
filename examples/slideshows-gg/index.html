@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>slideshows.gg showreel</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Bricolage Grotesque"; src: url("assets/fonts/bricolage-grotesque-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: block; }
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+      @font-face { font-family: "Geist Mono"; src: url("assets/fonts/geist-mono-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: block; }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #eaf3fc; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #eaf3fc; font-family: "Inter", sans-serif; color: #1d1d1d; }
+
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      #s2, #s3, #s4, #s5, #s6 { opacity: 0; }
+      .fill { position: absolute; inset: 0; }
+      .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .cloud { position: absolute; pointer-events: none; will-change: transform, opacity; }
+      .mist { position: absolute; left: 0; right: 0; bottom: 0; height: 280px; background: linear-gradient(to top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0)); pointer-events: none; }
+      .display { font-family: "Bricolage Grotesque", sans-serif; font-weight: 600; }
+      .mono { font-family: "Geist Mono", monospace; font-weight: 500; }
+      svg.ico { display: block; }
+
+      /* ---------- Scene 1: the hook ---------- */
+      #s1 { background: #dfeefd; }
+      #s1-zoom { transform-origin: 64% 44%; }
+      #s1-wisp { left: -260px; top: 610px; width: 1760px; opacity: 0.9; }
+      #s1-bankbg { right: -560px; bottom: -380px; width: 1650px; }
+      #s1-glow { position: absolute; left: -120px; top: 150px; width: 1900px; height: 780px; background: radial-gradient(50% 50% at 46% 50%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.38) 46%, rgba(255, 255, 255, 0) 100%); }
+      #s1-head { position: absolute; left: 150px; top: 382px; font-size: 224px; line-height: 1; letter-spacing: -0.035em; color: #1d1d1d; white-space: nowrap; display: flex; gap: 0.2em; }
+      #s1-head .w { display: inline-block; will-change: transform, filter, opacity; }
+      #w-got { transform-origin: 50% 60%; }
+      #w-idea { transform-origin: 0% 100%; }
+      .iw { position: relative; display: inline-block; }
+      #s1-dot { position: absolute; left: 50%; top: -0.075em; width: 0.34em; height: 0.34em; margin-left: calc(-0.17em + 6px); filter: drop-shadow(0 10px 18px rgba(58, 119, 229, 0.55)); }
+      #s1-thru { left: 50%; top: 50%; width: 2900px; margin-left: -1450px; margin-top: -980px; transform-origin: 50% 62%; }
+      #s1-puffL { left: -420px; top: 330px; width: 1200px; }
+      #s1-puffR { right: -460px; top: -220px; width: 1250px; }
+      #s1-white { position: absolute; inset: 0; background: #ffffff; }
+
+      /* ---------- Scene 2: the composer ---------- */
+      #s2 { background: #2f7de6; }
+      #s2-cl1 { left: -560px; top: 660px; width: 1800px; }
+      #s2-cl2 { right: -360px; top: 30px; width: 1400px; opacity: 0.85; }
+      #comp { position: absolute; left: 360px; top: 206px; width: 1200px; padding: 44px 52px; background: #ffffff; border-radius: 36px; box-shadow: 0 0 0 8px rgba(221, 229, 237, 0.7), 0 60px 120px -40px rgba(10, 40, 110, 0.6); display: flex; flex-direction: column; gap: 30px; }
+      .c-head { display: flex; align-items: center; gap: 16px; height: 48px; }
+      .c-num { height: 42px; padding: 0 18px; border-radius: 999px; background: #1d1d1d; color: #fff; font-weight: 700; font-size: 22px; display: flex; align-items: center; }
+      .c-title { font-weight: 600; font-size: 30px; }
+      .c-promo { margin-left: auto; font-weight: 600; font-size: 24px; color: #4d585f; display: flex; align-items: center; gap: 14px; }
+      .tog { width: 66px; height: 38px; border-radius: 999px; background: #dde5ed; position: relative; }
+      .tog i { position: absolute; left: 4px; top: 4px; width: 30px; height: 30px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+      .c-field { display: flex; flex-direction: column; gap: 12px; }
+      .c-label { font-weight: 600; font-size: 22px; color: #4d585f; letter-spacing: 0.01em; }
+      .c-labelrow { display: flex; justify-content: space-between; align-items: baseline; }
+      .c-hint { font-weight: 500; font-size: 20px; color: #5f6a71; }
+      .c-input { height: 88px; border-radius: 20px; border: 3px solid #dde5ed; background: #f7f9fc; padding: 0 26px; display: flex; align-items: center; font-weight: 500; font-size: 36px; color: #1d1d1d; white-space: pre; }
+      .caret { display: inline-block; width: 3px; height: 42px; background: #3b82f6; margin-left: 3px; border-radius: 2px; opacity: 0; }
+      .c-prompt { border: 3px solid #dde5ed; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 16px; background: #fff; }
+      .c-refs { display: flex; gap: 14px; height: 92px; }
+      .ref { width: 92px; height: 92px; border-radius: 18px; overflow: hidden; position: relative; box-shadow: 0 0 0 3px #fff, 0 0 0 6px #3b82f6; }
+      .ref img { width: 100%; height: 100%; object-fit: cover; object-position: 78% 42%; }
+      .ref-tag { position: absolute; left: 6px; bottom: 6px; background: rgba(29, 29, 29, 0.82); color: #fff; font-weight: 700; font-size: 16px; padding: 3px 7px; border-radius: 8px; }
+      .ref-add { width: 92px; height: 92px; border-radius: 18px; border: 3px dashed #dde5ed; display: flex; align-items: center; justify-content: center; color: #9aa5ad; }
+      .c-ptext { font-weight: 500; font-size: 32px; color: #1d1d1d; display: flex; align-items: center; height: 48px; white-space: pre; }
+      .mention { background: #e8f0fe; color: #406ae4; font-weight: 600; padding: 2px 10px; border-radius: 10px; }
+      .c-foot { display: flex; align-items: center; justify-content: space-between; height: 84px; }
+      .c-meta { font-size: 22px; color: #4d585f; letter-spacing: 0.08em; text-transform: uppercase; }
+      #gen-btn { width: 330px; height: 84px; border-radius: 999px; background-image: linear-gradient(110deg, #3b82f6 0%, #406ae4 100%); box-shadow: inset 4px 4px 8px rgba(255, 255, 255, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.3), 0 14px 28px rgba(58, 119, 229, 0.5); color: #fff; font-weight: 600; font-size: 32px; display: flex; align-items: center; justify-content: center; gap: 14px; position: relative; }
+      .ripple { position: absolute; left: 1283px; top: 729px; width: 120px; height: 120px; border-radius: 50%; border: 6px solid #ffffff; opacity: 0; }
+      #cursor { position: absolute; left: -10.5px; top: -5.25px; width: 56px; height: 56px; transform-origin: 10.5px 5.25px; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3)); }
+
+      /* ---------- Scene 3: the slides ---------- */
+      #s3 { background: #4d93ef; }
+      #s3-bgwrap img { filter: blur(9px) saturate(1.05); }
+      #s3-glow { position: absolute; left: 160px; top: 160px; width: 1600px; height: 900px; background: radial-gradient(50% 50% at 50% 55%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.18) 55%, rgba(255, 255, 255, 0) 100%); }
+      #s3-cl { right: -600px; bottom: -420px; width: 1800px; opacity: 0.95; }
+      #s3-cl2 { left: -700px; bottom: -380px; width: 1700px; opacity: 0.9; }
+      #s3-stage { perspective: 2400px; perspective-origin: 50% 50%; }
+      #s3-world { transform-style: preserve-3d; }
+      .card { position: absolute; width: 380px; height: 676px; will-change: transform, opacity; }
+      .card-in { position: absolute; inset: 0; border-radius: 30px; overflow: hidden; background: #edf1f4; box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.78), 0 40px 80px -30px rgba(10, 30, 80, 0.6); }
+      .skel { position: absolute; inset: 0; background: linear-gradient(160deg, #f4f7fa 0%, #e2e9f0 100%); overflow: hidden; }
+      .sheen { position: absolute; top: 0; bottom: 0; left: 0; width: 60%; background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 100%); }
+      .skel-lbl { position: absolute; left: 0; right: 0; top: 300px; display: flex; flex-direction: column; align-items: center; gap: 12px; font-weight: 600; font-size: 24px; color: #4d585f; }
+      .skel-lbl svg { width: 34px; height: 34px; color: #4d585f; }
+      .shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+      .stext { position: absolute; left: 24px; right: 24px; top: 14%; text-align: center; color: #fff; font-weight: 700; font-size: 34px; line-height: 1.18; letter-spacing: -0.01em; text-shadow: 0 0 3px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.5); }
+      .stext span { display: inline-block; opacity: 0; }
+      .cchip { position: absolute; left: 18px; top: 18px; height: 36px; padding: 0 13px; border-radius: 999px; background: rgba(29, 29, 29, 0.82); color: #fff; font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 6px; opacity: 0; }
+      .cchip.promo { background: #e8f0fe; color: #406ae4; }
+      .cchip.promo svg { width: 16px; height: 16px; }
+      .cflash { position: absolute; inset: 0; background: #ffffff; opacity: 0; }
+      #s3-parts { position: absolute; inset: 0; pointer-events: none; }
+      .pt { position: absolute; left: 1343px; top: 789px; opacity: 0; will-change: transform, opacity; }
+      #s3-pill { position: absolute; left: 50%; bottom: 58px; width: 660px; margin-left: -330px; height: 80px; border-radius: 999px; background: #ffffff; box-shadow: 0 0 0 6px rgba(221, 229, 237, 0.7), 0 20px 40px -18px rgba(10, 30, 80, 0.5); display: flex; align-items: center; gap: 18px; padding: 0 30px 0 22px; }
+      .p-ico { position: relative; width: 40px; height: 40px; flex: none; }
+      .p-ico svg { position: absolute; inset: 0; width: 40px; height: 40px; }
+      #p-spin { color: #3b82f6; }
+      #p-check { opacity: 0; }
+      .p-txt { position: relative; width: 270px; height: 34px; font-weight: 600; font-size: 27px; }
+      .p-txt span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+      #p-ready { opacity: 0; }
+      .p-bar { position: relative; flex: 1; height: 12px; border-radius: 6px; background: #dde5ed; overflow: hidden; }
+      #p-fill { position: absolute; inset: 0; border-radius: 6px; background-image: linear-gradient(110deg, #3b82f6 0%, #406ae4 100%); transform-origin: 0 50%; }
+      #p-count { font-size: 26px; color: #1d1d1d; width: 56px; text-align: right; }
+
+      /* ---------- Scene 4: the phone ---------- */
+      #s4 { background: #dcecfc; }
+      #s4-cl { left: -700px; bottom: -420px; width: 1800px; }
+      #s4-wisp { right: -420px; top: 120px; width: 1500px; opacity: 0.8; }
+      #s4-glow { position: absolute; left: 800px; top: 150px; width: 1120px; height: 800px; background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%); }
+      #phone-wrap { position: absolute; left: 392px; top: 96px; width: 444px; height: 888px; }
+      #phone { position: absolute; inset: 0; border-radius: 70px; background: linear-gradient(135deg, #323232 0%, #000000 100%); padding: 14px; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.16), 0 0 0 6px rgba(255, 255, 255, 0.6), 0 70px 120px -40px rgba(10, 30, 80, 0.65); }
+      #screen { position: relative; width: 416px; height: 860px; border-radius: 56px; overflow: hidden; background: #000; }
+      #strip { position: absolute; left: 0; top: 0; width: 1664px; height: 860px; display: flex; }
+      .panel { position: relative; width: 416px; height: 860px; flex: none; overflow: hidden; }
+      .panel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      #pv1, #pv2, #pn1, #pn2, #pn3 { opacity: 0; }
+      .tt-scrim { position: absolute; left: 0; right: 0; pointer-events: none; }
+      .tt-scrim.top { top: 0; height: 190px; background: linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0)); }
+      .tt-scrim.bot { bottom: 0; height: 330px; background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)); }
+      .ptext { position: absolute; left: 28px; right: 28px; top: 17%; text-align: center; color: #fff; font-weight: 700; font-size: 34px; line-height: 1.2; letter-spacing: -0.01em; text-shadow: 0 0 3px rgba(0, 0, 0, 0.7), 0 2px 6px rgba(0, 0, 0, 0.5); white-space: normal; }
+      #scr-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+      .tt-top { position: absolute; top: 64px; left: 0; right: 0; display: flex; justify-content: center; gap: 26px; color: rgba(255, 255, 255, 0.92); font-weight: 600; font-size: 23px; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5); }
+      .tt-top b { color: #fff; font-weight: 700; position: relative; }
+      .tt-top b::after { content: ""; position: absolute; left: 50%; bottom: -10px; width: 30px; height: 4px; margin-left: -15px; border-radius: 2px; background: #fff; }
+      .tt-rail { position: absolute; right: 14px; bottom: 190px; display: flex; flex-direction: column; align-items: center; gap: 26px; color: #fff; }
+      .tt-rail svg { width: 44px; height: 44px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4)); }
+      .tt-av { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #fff; overflow: hidden; }
+      .tt-av img { width: 100%; height: 100%; object-fit: cover; object-position: 78% 40%; }
+      .tt-cap { position: absolute; left: 22px; right: 96px; bottom: 64px; color: #fff; font-weight: 500; font-size: 19px; line-height: 1.3; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55); }
+      .tt-cap b { display: block; font-weight: 700; font-size: 22px; margin-bottom: 6px; }
+      .tt-dots { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 9px; }
+      .tt-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.45); }
+      #stack { position: absolute; left: 1010px; top: 286px; width: 880px; }
+      .line { font-size: 128px; line-height: 1.02; letter-spacing: -0.035em; color: #1d1d1d; white-space: nowrap; transform-origin: 0% 60%; }
+      #chips { margin-top: 44px; display: flex; gap: 16px; }
+      .chip { position: relative; height: 68px; padding: 0 26px 0 9px; border-radius: 999px; display: flex; align-items: center; gap: 14px; font-weight: 600; font-size: 27px; white-space: nowrap; background: #fff; color: #1d1d1d; box-shadow: 0 0 0 5px rgba(221, 229, 237, 0.75), 0 12px 26px -12px rgba(20, 50, 110, 0.35); }
+      .chip-on { position: absolute; inset: 0; border-radius: 999px; background-image: linear-gradient(110deg, #3b82f6 0%, #406ae4 100%); box-shadow: inset 4px 4px 8px rgba(255, 255, 255, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.3), 0 10px 22px rgba(58, 119, 229, 0.5); opacity: 0; }
+      .chip img, .chip span { position: relative; }
+      .chip img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; object-position: 75% 40%; }
+
+      /* ---------- Cloud wipe ---------- */
+      #wipe { position: absolute; left: 0; top: -80px; width: 6800px; height: 1240px; pointer-events: none; }
+      #wipe-core { position: absolute; left: 1700px; top: 0; width: 3400px; height: 1240px; background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #ffffff 12%, #ffffff 88%, rgba(255, 255, 255, 0) 100%); }
+      #wipe img { filter: brightness(1.14); }
+      #wipe-a { position: absolute; left: 700px; top: 40px; width: 2300px; }
+      #wipe-b { position: absolute; left: 3800px; top: 20px; width: 2300px; transform: scaleX(-1); }
+      #wipe-c { position: absolute; left: 1900px; top: -260px; width: 1300px; }
+      #wipe-d { position: absolute; left: 3500px; top: 760px; width: 1400px; }
+
+      /* ---------- Scene 5: promo constellation ---------- */
+      #s5 { background: #2f7de6; }
+      #s5-cl { left: -640px; bottom: -430px; width: 1800px; }
+      #s5-cl2 { right: -640px; bottom: -460px; width: 1800px; }
+      #s5-lines { position: absolute; inset: 0; }
+      #hub { position: absolute; left: 830px; top: 370px; width: 260px; height: 260px; }
+      #hub img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 26px 40px rgba(10, 40, 120, 0.45)); }
+      #s5-mist { height: 380px; }
+      #hub-bloom { position: absolute; left: 610px; top: 150px; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(214, 232, 255, 0.35) 45%, rgba(214, 232, 255, 0) 100%); }
+      .orb { position: absolute; left: -66px; top: -66px; width: 132px; height: 132px; will-change: transform; }
+      .orb-in { width: 132px; height: 132px; border-radius: 34px; background: #fff; overflow: hidden; box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.55), 0 26px 44px -18px rgba(8, 28, 90, 0.6); }
+      .orb-in img { width: 104%; height: 104%; margin: -2%; object-fit: cover; display: block; }
+      #s5-cap { position: absolute; left: 0; right: 0; top: 876px; display: flex; justify-content: center; gap: 0.24em; font-size: 88px; line-height: 1.05; letter-spacing: -0.03em; color: #1d1d1d; }
+      #s5-cap .cw { display: inline-block; }
+      #bloom { position: absolute; left: 760px; top: 300px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(50% 50% at 50% 50%, #ffffff 0%, #ffffff 70%, rgba(255, 255, 255, 0) 100%); opacity: 0; pointer-events: none; }
+
+      /* ---------- Scene 6: the lockup ---------- */
+      #s6 { background: #cfe6fb; }
+      #s6-bg { object-position: 50% 100%; }
+      #s6-wisp { left: -300px; top: 40px; width: 1700px; opacity: 0.75; }
+      #s6-glow { position: absolute; left: 220px; top: 20px; width: 1480px; height: 820px; background: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.86) 0%, rgba(255, 255, 255, 0.46) 50%, rgba(255, 255, 255, 0) 100%); }
+      #lockup { position: absolute; left: 0; right: 0; top: 218px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+      #l-starwrap { position: relative; width: 176px; height: 176px; flex: none; }
+      #l-star { width: 176px; height: 176px; object-fit: contain; filter: drop-shadow(0 18px 26px rgba(160, 110, 10, 0.35)); }
+      #l-glint { position: absolute; right: -6px; top: -10px; width: 64px; height: 64px; }
+      #l-word { font-size: 184px; line-height: 1.12; letter-spacing: -0.04em; color: #1d1d1d; display: flex; overflow: hidden; padding: 0 0.04em 0.04em 0; }
+      #l-word .lt { display: inline-block; }
+      #l-tag { position: absolute; left: 0; right: 0; top: 462px; text-align: center; font-weight: 500; font-size: 42px; color: #3e484e; letter-spacing: -0.01em; }
+      #l-cta { position: absolute; left: 0; right: 0; top: 556px; display: flex; justify-content: center; gap: 22px; }
+      #cta-pill { position: relative; height: 92px; padding: 0 12px 0 40px; border-radius: 999px; background-image: linear-gradient(110deg, #3b82f6 0%, #406ae4 100%); box-shadow: inset 4px 4px 8px rgba(255, 255, 255, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.3), 0 16px 32px rgba(58, 119, 229, 0.5); color: #fff; font-weight: 600; font-size: 34px; display: flex; align-items: center; gap: 22px; overflow: hidden; }
+      .disc { width: 68px; height: 68px; border-radius: 50%; background: #fff; color: #1d1d1d; display: flex; align-items: center; justify-content: center; }
+      #cta-shine { position: absolute; top: -20px; bottom: -20px; left: 0; width: 45%; background: linear-gradient(100deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0) 100%); transform: translateX(-160%); }
+      #url-pill { height: 92px; padding: 0 40px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 6px rgba(221, 229, 237, 0.7), 0 16px 30px -14px rgba(20, 50, 110, 0.4); display: flex; align-items: center; font-weight: 600; font-size: 34px; color: #1d1d1d; }
+      #hill-l { position: absolute; left: -90px; bottom: -70px; width: 1010px; }
+      #hill-r { position: absolute; right: -90px; bottom: -70px; width: 1010px; }
+      #s6-puffL { left: -420px; top: 240px; width: 1300px; }
+      #s6-puffR { right: -460px; top: -120px; width: 1300px; }
+
+      /* ---------- Overlays ---------- */
+      #hud { position: absolute; inset: 0; pointer-events: none; }
+      #hud-brand { position: absolute; left: 56px; top: 48px; height: 66px; padding: 0 24px 0 12px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 6px rgba(221, 229, 237, 0.7), 0 12px 30px -14px rgba(20, 50, 110, 0.4); display: flex; align-items: center; gap: 10px; }
+      #hud-brand img { width: 46px; height: 46px; object-fit: contain; }
+      #hud-brand span { font-size: 31px; letter-spacing: -0.02em; }
+      #hud-scene { position: absolute; right: 56px; top: 48px; height: 66px; padding: 0 26px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 6px rgba(221, 229, 237, 0.7), 0 12px 30px -14px rgba(20, 50, 110, 0.4); display: flex; align-items: center; gap: 16px; font-size: 22px; letter-spacing: 0.14em; }
+      .tickwin { height: 30px; overflow: hidden; }
+      .tickwin { position: relative; display: block; }
+      .tickwin b { position: absolute; left: 0; top: 0; height: 30px; line-height: 30px; font-weight: 500; white-space: nowrap; opacity: 0; }
+      #tn0, #tl0 { opacity: 1; }
+      #tick-numwin { width: 34px; color: #2f58d0; }
+      #tick-lblwin { width: 136px; color: #1d1d1d; }
+      .hsep { width: 2px; height: 26px; background: #dde5ed; }
+      #flash { position: absolute; inset: 0; background: radial-gradient(circle at 1343px 789px, #ffffff 0%, #ffffff 34%, rgba(236, 245, 255, 0.97) 70%, rgba(214, 232, 255, 0.94) 100%); opacity: 0; pointer-events: none; }
+      #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 75% 75% at 50% 50%, rgba(10, 30, 70, 0) 62%, rgba(10, 30, 70, 0.16) 100%); }
+      #grain { position: absolute; left: -200px; top: -200px; width: 2320px; height: 1480px; pointer-events: none; opacity: 0.13; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 256px 256px; }
+      #s3, #s4, #s5 { z-index: 1; }
+      #wipe { z-index: 60; }
+      #hud { z-index: 70; }
+      #vignette { z-index: 75; }
+      #flash, #bloom { z-index: 80; }
+      #grain { z-index: 90; }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7cb3ff" />
+          <stop offset="0.45" stop-color="#3b82f6" />
+          <stop offset="1" stop-color="#406ae4" />
+        </linearGradient>
+        <symbol id="spark" viewBox="0 0 24 24"><path d="M12 0C12.9 6.2 15.4 10.1 24 12 15.4 13.9 12.9 17.8 12 24 11.1 17.8 8.6 13.9 0 12 8.6 10.1 11.1 6.2 12 0Z" /></symbol>
+        <symbol id="spin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-opacity="0.22" stroke-width="3" /><path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></symbol>
+      </defs>
+    </svg>
+
+    <div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1920" data-height="1080">
+      <!-- ================= S1: Got an idea? ================= -->
+      <div id="s1" class="scene">
+        <div id="s1-zoom" class="fill">
+          <div id="s1-cam" class="fill">
+            <img class="bg" src="assets/art/sky.jpg" alt="" />
+            <img id="s1-wisp" class="cloud" src="assets/art/cloud-wisps.webp" alt="" />
+            <img id="s1-bankbg" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          </div>
+          <div id="s1-glow"></div>
+          <h1 id="s1-head" class="display">
+            <span class="w" id="w-got">Got</span><span class="w" id="w-an">an</span><span class="w" id="w-idea"><span class="iw">&#305;<span id="s1-dot"><svg class="ico" viewBox="0 0 24 24" width="100%" height="100%"><use href="#spark" fill="url(#gBlue)" /></svg></span></span>dea?</span>
+          </h1>
+          <div class="mist"></div>
+        </div>
+        <img id="s1-thru" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+        <img id="s1-puffL" class="cloud" src="assets/art/cloud-puff.webp" alt="" />
+        <img id="s1-puffR" class="cloud" src="assets/art/cloud-puff.webp" alt="" />
+        <div id="s1-white"></div>
+      </div>
+
+      <!-- ================= S2: the composer ================= -->
+      <div id="s2" class="scene">
+        <div id="s2-zoom" class="fill">
+          <img class="bg" src="assets/art/hero-sky.jpg" alt="" />
+          <img id="s2-cl1" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          <img id="s2-cl2" class="cloud" src="assets/art/cloud-wisps.webp" alt="" />
+          <div id="s2-cam" class="fill">
+            <div id="comp">
+              <div class="c-row c-head">
+                <span class="c-num">1/5</span><span class="c-title">Hook</span>
+                <span class="c-promo">Promo <span class="tog"><i></i></span></span>
+              </div>
+              <div class="c-row c-field">
+                <span class="c-label">Text on the slide</span>
+                <div class="c-input" id="in1"><span id="t1"></span><i class="caret" id="caret1"></i></div>
+              </div>
+              <div class="c-row c-field">
+                <div class="c-labelrow"><span class="c-label">Image prompt</span><span class="c-hint">Type @ to use a reference</span></div>
+                <div class="c-prompt" id="pbox">
+                  <div class="c-refs">
+                    <div class="ref" id="ref1"><img src="assets/ugc/matcha-pout.jpg" alt="" /><span class="ref-tag">@img1</span></div>
+                    <div class="ref-add"><svg class="ico" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg></div>
+                  </div>
+                  <div class="c-ptext"><span class="mention" id="mention">@img1</span><span id="t2"></span><i class="caret" id="caret2"></i></div>
+                </div>
+              </div>
+              <div class="c-row c-foot">
+                <span class="c-meta mono">Slide 1 of 5</span>
+                <div id="gen-btn"><svg class="ico" width="30" height="30" viewBox="0 0 24 24"><use href="#spark" fill="#ffffff" /></svg><span>Generate</span></div>
+              </div>
+            </div>
+            <div id="ripple1" class="ripple"></div>
+            <div id="ripple2" class="ripple"></div>
+            <div id="cursor"><svg class="ico" width="56" height="56" viewBox="0 0 32 32"><path d="M6 3v23.5l6.4-6.1 4.2 9.3 4.1-1.8-4.1-9.2h8.7z" fill="#ffffff" stroke="#1d1d1d" stroke-width="2" stroke-linejoin="round" /></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S3: the slides ================= -->
+      <div id="s3" class="scene">
+        <div id="s3-whip" class="fill">
+          <div id="s3-bgwrap" class="fill"><img class="bg" src="assets/art/hero-sky.jpg" alt="" /></div>
+          <div id="s3-glow"></div>
+          <img id="s3-cl2" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          <img id="s3-cl" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          <div id="s3-stage" class="fill">
+            <div id="s3-world" class="fill">
+              <div class="card" id="card0"><div class="card-in">
+                <div class="skel"><div class="sheen"></div><div class="skel-lbl"><svg class="spinner"><use href="#spin" /></svg>Generating</div></div>
+                <img class="shot" src="assets/ugc/matcha-pout.jpg" alt="" />
+                <div class="stext"><span>small</span> <span>habits</span> <span>that</span> <span>fixed</span> <span>my</span> <span>whole</span> <span>routine</span></div>
+                <span class="cchip">1/5</span><div class="cflash"></div>
+              </div></div>
+              <div class="card" id="card1"><div class="card-in">
+                <div class="skel"><div class="sheen"></div><div class="skel-lbl"><svg class="spinner"><use href="#spin" /></svg>Generating</div></div>
+                <img class="shot" src="assets/ugc/gym-stanley.jpg" alt="" />
+                <div class="stext"><span>lift</span> <span>before</span> <span>the</span> <span>day</span> <span>starts</span></div>
+                <span class="cchip">2/5</span><div class="cflash"></div>
+              </div></div>
+              <div class="card" id="card2"><div class="card-in">
+                <div class="skel"><div class="sheen"></div><div class="skel-lbl"><svg class="spinner"><use href="#spin" /></svg>Generating</div></div>
+                <img class="shot" src="assets/ugc/towel-mirror.jpg" alt="" />
+                <div class="stext"><span>cold</span> <span>shower</span> <span>right</span> <span>after</span></div>
+                <span class="cchip">3/5</span><div class="cflash"></div>
+              </div></div>
+              <div class="card" id="card3"><div class="card-in">
+                <div class="skel"><div class="sheen"></div><div class="skel-lbl"><svg class="spinner"><use href="#spin" /></svg>Generating</div></div>
+                <img class="shot" src="assets/ugc/apples-walmart.jpg" alt="" />
+                <div class="stext"><span>real</span> <span>food,</span> <span>not</span> <span>takeout</span></div>
+                <span class="cchip">4/5</span><div class="cflash"></div>
+              </div></div>
+              <div class="card" id="card4"><div class="card-in">
+                <div class="skel"><div class="sheen"></div><div class="skel-lbl"><svg class="spinner"><use href="#spin" /></svg>Generating</div></div>
+                <img class="shot" src="assets/ugc/gruns-kitchen.jpg" alt="" />
+                <div class="stext"><span>greens</span> <span>gummies,</span> <span>every</span> <span>single</span> <span>day</span></div>
+                <span class="cchip promo"><svg class="ico" viewBox="0 0 24 24"><use href="#spark" fill="#406ae4" /></svg>Promo</span><div class="cflash"></div>
+              </div></div>
+            </div>
+          </div>
+          <div id="s3-parts"></div>
+          <div id="s3-pill">
+            <span class="p-ico"><svg id="p-spin"><use href="#spin" /></svg><svg id="p-check" viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#10b981" /><path d="M11.5 20.5l6 6L29 14.5" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
+            <span class="p-txt"><span id="p-gen">Generating slideshow</span><span id="p-ready">Slideshow ready</span></span>
+            <span class="p-bar"><i id="p-fill"></i></span>
+            <span id="p-count" class="mono">0/5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S4: the phone ================= -->
+      <div id="s4" class="scene">
+        <div id="s4-whip" class="fill">
+          <div id="s4-bgwrap" class="fill"><img class="bg" src="assets/art/sky.jpg" alt="" /></div>
+          <img id="s4-wisp" class="cloud" src="assets/art/cloud-wisps.webp" alt="" />
+          <img id="s4-cl" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          <div id="s4-glow"></div>
+          <div id="phone-wrap">
+            <div id="phone">
+              <div id="screen">
+                <div id="strip" data-layout-allow-overflow data-layout-allow-occlusion>
+                  <div class="panel" id="pn0">
+                    <img id="pv0" src="assets/ugc/matcha-pout.jpg" alt="" />
+                    <img id="pv1" src="assets/ugc/matcha-gta.jpg" alt="" />
+                    <img id="pv2" src="assets/ugc/matcha-mc.jpg" alt="" />
+                    <div class="ptext"><span id="t4"></span><i class="caret" id="caret4"></i></div>
+                  </div>
+                  <div class="panel" id="pn1"><img src="assets/ugc/subway-girls.jpg" alt="" /><div class="ptext">still out with the girls every weekend</div></div>
+                  <div class="panel" id="pn2"><img src="assets/ugc/iced-coffee.jpg" alt="" /><div class="ptext">coffee after the gym, never before</div></div>
+                  <div class="panel" id="pn3"><img src="assets/ugc/whitening-strips.jpg" alt="" /><div class="ptext">whitening strips before every night out</div></div>
+                </div>
+                <div id="scr-flash"></div>
+                <div class="tt-scrim top"></div><div class="tt-scrim bot"></div>
+                <div class="tt-top"><span>Following</span><b>For You</b></div>
+                <div class="tt-rail">
+                  <div class="tt-av"><img src="assets/ugc/matcha-pout.jpg" alt="" /></div>
+                  <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M12 21s-7.4-4.5-9.5-9.1C1.1 8.6 3.1 4.6 6.8 4.6c2.1 0 3.5 1.1 4.2 2.4.7-1.3 2.1-2.4 4.2-2.4 3.7 0 5.7 4 4.3 7.3C18.4 16.5 12 21 12 21z" /></svg>
+                  <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M12 3C6.5 3 2 6.6 2 11c0 2.4 1.3 4.5 3.4 6L4.6 21l4.2-2.1c1 .3 2.1.4 3.2.4 5.5 0 10-3.6 10-8.3S17.5 3 12 3z" /></svg>
+                  <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M6 2.5h12v19l-6-4.4-6 4.4z" /></svg>
+                  <svg viewBox="0 0 24 24"><path fill="#ffffff" d="M14 4l8 7-8 7v-4.2C8.6 13.6 5 15.4 2 20c1-6 4.6-10.4 12-11.6z" /></svg>
+                </div>
+                <div class="tt-cap"><b>@sophie.routine</b>small habits that fixed my whole routine #routine</div>
+                <div class="tt-dots"><i id="dot0"></i><i id="dot1"></i><i id="dot2"></i><i id="dot3"></i></div>
+              </div>
+            </div>
+          </div>
+          <div id="stack">
+            <div class="line display" id="l1">Your copy.</div>
+            <div class="line display" id="l2">Your style.</div>
+            <div class="line display" id="l3">Every slide.</div>
+            <div id="chips">
+              <div class="chip" id="ch0"><i class="chip-on"></i><img src="assets/ugc/matcha-pout.jpg" alt="" /><span>UGC</span></div>
+              <div class="chip" id="ch1"><i class="chip-on"></i><img src="assets/ugc/matcha-gta.jpg" alt="" /><span>GTA 6</span></div>
+              <div class="chip" id="ch2"><i class="chip-on"></i><img src="assets/ugc/matcha-mc.jpg" alt="" /><span>Minecraft</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= S5: promo constellation ================= -->
+      <div id="s5" class="scene">
+        <div id="s5-cam" class="fill">
+          <div id="s5-bgwrap" class="fill"><img class="bg" src="assets/art/hero-sky.jpg" alt="" /></div>
+          <img id="s5-cl" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          <img id="s5-cl2" class="cloud" src="assets/art/cloud-bank.webp" alt="" />
+          <div class="mist" id="s5-mist"></div>
+          <div id="hub-bloom"></div>
+          <svg id="s5-lines" viewBox="0 0 1920 1080" width="1920" height="1080">
+            <line id="ln0" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+            <line id="ln1" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+            <line id="ln2" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+            <line id="ln3" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+            <line id="ln4" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+            <line id="ln5" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+            <line id="ln6" x1="960" y1="500" x2="960" y2="500" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 13" opacity="0.8" />
+          </svg>
+          <div class="orb" id="orb0"><div class="orb-in"><img src="assets/logos/imessage.png" alt="" /></div></div>
+          <div class="orb" id="orb1"><div class="orb-in"><img src="assets/logos/daimon.png" alt="" /></div></div>
+          <div class="orb" id="orb2"><div class="orb-in"><img src="assets/logos/bluffs.png" alt="" /></div></div>
+          <div class="orb" id="orb3"><div class="orb-in"><img src="assets/logos/botw.png" alt="" /></div></div>
+          <div class="orb" id="orb4"><div class="orb-in"><img src="assets/logos/clean-cam.png" alt="" /></div></div>
+          <div class="orb" id="orb5"><div class="orb-in"><img src="assets/logos/cocohealth.png" alt="" /></div></div>
+          <div class="orb" id="orb6"><div class="orb-in"><img src="assets/logos/true-fitness.png" alt="" /></div></div>
+          <div id="hub"><img src="assets/art/obj-spark.webp" alt="" /></div>
+          <div id="s5-cap" class="display"><span class="cw">Promo</span><span class="cw">slides,</span><span class="cw">built</span><span class="cw">in.</span></div>
+        </div>
+      </div>
+
+      <!-- ================= S6: the lockup ================= -->
+      <div id="s6" class="scene">
+        <div id="s6-cam" class="fill">
+          <img id="s6-bg" class="bg" src="assets/art/meadow.jpg" alt="" />
+          <img id="s6-wisp" class="cloud" src="assets/art/cloud-wisps.webp" alt="" />
+          <div id="s6-glow"></div>
+          <div id="lockup">
+            <div id="l-starwrap">
+              <img id="l-star" src="assets/art/logo-star.webp" alt="" />
+              <svg id="l-glint" class="ico" viewBox="0 0 24 24"><use href="#spark" fill="#ffffff" /></svg>
+            </div>
+            <div id="l-word" class="display"><span class="lt">S</span><span class="lt">l</span><span class="lt">i</span><span class="lt">d</span><span class="lt">e</span><span class="lt">s</span><span class="lt">h</span><span class="lt">o</span><span class="lt">w</span><span class="lt">s</span></div>
+          </div>
+          <div id="l-tag">Turn any idea into a TikTok slideshow.</div>
+          <div id="l-cta">
+            <div id="cta-pill">Start for free<span class="disc"><svg class="ico" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span><div id="cta-shine"></div></div>
+            <div id="url-pill">slideshows.gg</div>
+          </div>
+          <img id="hill-l" src="assets/art/hero-hill-left.webp" alt="" />
+          <img id="hill-r" src="assets/art/hero-hill-right.webp" alt="" />
+          <div class="mist"></div>
+        </div>
+        <img id="s6-puffL" class="cloud" src="assets/art/cloud-puff.webp" alt="" />
+        <img id="s6-puffR" class="cloud" src="assets/art/cloud-puff.webp" alt="" />
+      </div>
+
+      <!-- ================= Overlays ================= -->
+      <div id="wipe">
+        <div id="wipe-core"></div>
+        <img id="wipe-a" src="assets/art/cloud-bank.webp" alt="" />
+        <img id="wipe-b" src="assets/art/cloud-bank.webp" alt="" />
+        <img id="wipe-c" src="assets/art/cloud-puff.webp" alt="" />
+        <img id="wipe-d" src="assets/art/cloud-puff.webp" alt="" />
+      </div>
+      <div id="hud">
+        <div id="hud-brand"><img src="assets/art/logo-star.webp" alt="" /><span class="display">Slideshows</span></div>
+        <div id="hud-scene" class="mono">
+          <span class="tickwin" id="tick-numwin" data-layout-allow-overlap><b id="tn0">01</b><b id="tn1">02</b><b id="tn2">03</b><b id="tn3">04</b><b id="tn4">05</b></span>
+          <span class="hsep"></span>
+          <span class="tickwin" id="tick-lblwin" data-layout-allow-overlap><b id="tl0">IDEA</b><b id="tl1">WRITE</b><b id="tl2">GENERATE</b><b id="tl3">STYLE</b><b id="tl4">PROMO</b></span>
+        </div>
+      </div>
+      <div id="vignette"></div>
+      <div id="flash"></div>
+      <div id="bloom"></div>
+      <div id="grain"></div>
+
+      <!-- AUDIO:BEGIN (generated by scripts/build_audio.py) -->
+      <audio id="a-bed" src="assets/music/bed.wav" data-start="0" data-duration="15" data-track-index="10" data-volume="0.9"></audio>
+      <audio id="a-cloud1" src="assets/sfx/cloud-whoosh.wav" data-start="0.000" data-duration="1.600" data-track-index="11" data-volume="0.5"></audio>
+      <audio id="a-swish1" src="assets/sfx/swish.wav" data-start="0.240" data-duration="0.600" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="a-swish2" src="assets/sfx/swish.wav" data-start="0.500" data-duration="0.600" data-track-index="13" data-volume="0.24"></audio>
+      <audio id="a-shim1" src="assets/sfx/shimmer.wav" data-start="1.060" data-duration="1.400" data-track-index="12" data-volume="0.35"></audio>
+      <audio id="a-zoom" src="assets/sfx/swoosh-big.wav" data-start="1.381" data-duration="1.200" data-track-index="13" data-volume="0.5"></audio>
+      <audio id="a-riser1" src="assets/sfx/riser.wav" data-start="1.722" data-duration="2.000" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="a-type" src="assets/sfx/type.wav" data-start="1.975" data-duration="1.600" data-track-index="14" data-volume="0.3"></audio>
+      <audio id="a-tap1" src="assets/sfx/tap.wav" data-start="2.329" data-duration="0.500" data-track-index="15" data-volume="0.5"></audio>
+      <audio id="a-tap2" src="assets/sfx/tap.wav" data-start="2.775" data-duration="0.500" data-track-index="12" data-volume="0.4"></audio>
+      <audio id="a-click" src="assets/sfx/click.wav" data-start="3.484" data-duration="0.480" data-track-index="12" data-volume="0.55"></audio>
+      <audio id="a-drop" src="assets/sfx/subhit.wav" data-start="3.722" data-duration="2.500" data-track-index="11" data-volume="0.55"></audio>
+      <audio id="a-shim2" src="assets/sfx/shimmer.wav" data-start="3.737" data-duration="1.400" data-track-index="13" data-volume="0.32"></audio>
+      <audio id="a-shuffle" src="assets/sfx/shuffle.wav" data-start="3.767" data-duration="1.200" data-track-index="14" data-volume="0.4"></audio>
+      <audio id="a-shut1" src="assets/sfx/shutter.wav" data-start="4.188" data-duration="0.440" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="a-shut2" src="assets/sfx/shutter.wav" data-start="4.653" data-duration="0.440" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="a-shut3" src="assets/sfx/shutter.wav" data-start="5.118" data-duration="0.440" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="a-shut4" src="assets/sfx/shutter.wav" data-start="5.584" data-duration="0.440" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="a-shut5" src="assets/sfx/shutter.wav" data-start="6.049" data-duration="0.440" data-track-index="12" data-volume="0.28"></audio>
+      <audio id="a-ping1" src="assets/sfx/ping.wav" data-start="6.149" data-duration="1.200" data-track-index="13" data-volume="0.4"></audio>
+      <audio id="a-whip" src="assets/sfx/swish.wav" data-start="7.235" data-duration="0.600" data-track-index="11" data-volume="0.5"></audio>
+      <audio id="a-chips" src="assets/sfx/tap.wav" data-start="8.445" data-duration="0.500" data-track-index="11" data-volume="0.35"></audio>
+      <audio id="a-flick1" src="assets/sfx/flick.wav" data-start="8.841" data-duration="0.460" data-track-index="12" data-volume="0.4"></audio>
+      <audio id="a-flick2" src="assets/sfx/flick.wav" data-start="9.306" data-duration="0.460" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="a-flick3" src="assets/sfx/flick.wav" data-start="9.771" data-duration="0.460" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="a-swipe1" src="assets/sfx/flick.wav" data-start="10.237" data-duration="0.460" data-track-index="11" data-volume="0.36"></audio>
+      <audio id="a-swipe2" src="assets/sfx/flick.wav" data-start="10.469" data-duration="0.460" data-track-index="12" data-volume="0.36"></audio>
+      <audio id="a-swipe3" src="assets/sfx/flick.wav" data-start="10.702" data-duration="0.460" data-track-index="11" data-volume="0.36"></audio>
+      <audio id="a-cloud2" src="assets/sfx/cloud-whoosh.wav" data-start="10.661" data-duration="1.600" data-track-index="13" data-volume="0.55"></audio>
+      <audio id="a-riser2" src="assets/sfx/riser.wav" data-start="11.028" data-duration="2.000" data-track-index="12" data-volume="0.4"></audio>
+      <audio id="a-tap3" src="assets/sfx/tap.wav" data-start="11.301" data-duration="0.500" data-track-index="11" data-volume="0.4"></audio>
+      <audio id="a-tap4" src="assets/sfx/tap.wav" data-start="11.441" data-duration="0.500" data-track-index="14" data-volume="0.35"></audio>
+      <audio id="a-suck" src="assets/sfx/swoosh-big.wav" data-start="12.565" data-duration="1.200" data-track-index="11" data-volume="0.36"></audio>
+      <audio id="a-boom" src="assets/sfx/boom.wav" data-start="13.028" data-duration="1.972" data-track-index="12" data-volume="0.55"></audio>
+      <audio id="a-tail" src="assets/sfx/tail.wav" data-start="13.078" data-duration="1.922" data-track-index="13" data-volume="0.45"></audio>
+      <audio id="a-shim3" src="assets/sfx/shimmer.wav" data-start="13.165" data-duration="1.400" data-track-index="14" data-volume="0.4"></audio>
+      <audio id="a-tap5" src="assets/sfx/tap.wav" data-start="13.945" data-duration="0.500" data-track-index="11" data-volume="0.45"></audio>
+      <audio id="a-ping2" src="assets/sfx/ping.wav" data-start="14.258" data-duration="0.742" data-track-index="15" data-volume="0.35"></audio>      <!-- AUDIO:END -->
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      /* ---- Beat grid: music bed at 130.5 BPM, drop on the Generate release ---- */
+      const B = 0.46530; /* AUTO:BEAT */
+      const C1 = B * 4; // hook -> composer
+      const C2 = B * 8; // drop: composer -> slides
+      const C3 = B * 16; // slides -> phone
+      const C4 = B * 24; // phone -> promo
+      const C5 = B * 28; // promo -> lockup, music stops
+      const END = 15;
+      const S2 = (f) => C1 + f * (C2 - C1); // a point inside the composer bar, as a fraction of it
+
+      const $ = (s) => document.querySelector(s);
+      const $$ = (s) => Array.from(document.querySelectorAll(s));
+      const clamp01 = (v) => Math.min(1, Math.max(0, v));
+      const prand = (n) => {
+        const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+        return x - Math.floor(x);
+      };
+      const easeOut3 = (p) => 1 - Math.pow(1 - p, 3);
+
+      /* ---- Build procedural pieces once ---- */
+      const SLOTS = [0, 1, 2, 3, 4].map((i) => {
+        const o = i - 2;
+        return { cx: 960 + o * 420, top: 202 + Math.abs(o) * 14, z: -Math.abs(o) * 130, ry: -o * 10, rz: o * 2.2 };
+      });
+      SLOTS.forEach((s, i) => {
+        const c = $("#card" + i);
+        c.style.left = s.cx - 190 + "px";
+        c.style.top = s.top + "px";
+      });
+
+      const PARTS = [];
+      const PCOL = ["#ffffff", "#3b82f6", "#ffd34d", "#9cc4ff", "#ffffff", "#406ae4"];
+      const field = $("#s3-parts");
+      for (let i = 0; i < 32; i++) {
+        const size = 16 + prand(i * 3 + 1) * 30;
+        const d = document.createElement("div");
+        d.className = "pt";
+        d.style.width = size + "px";
+        d.style.height = size + "px";
+        d.style.marginLeft = -size / 2 + "px";
+        d.style.marginTop = -size / 2 + "px";
+        d.innerHTML = '<svg viewBox="0 0 24 24" width="100%" height="100%"><use href="#spark" fill="' + PCOL[i % PCOL.length] + '"/></svg>';
+        field.appendChild(d);
+        const ang = -Math.PI / 2 + (prand(i * 5 + 2) * 2 - 1) * Math.PI * 0.92;
+        const spd = 620 + prand(i * 7 + 3) * 1150;
+        PARTS.push({ el: d, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, spin: (prand(i * 11 + 4) * 2 - 1) * 540 });
+      }
+
+      const EL = {
+        grain: $("#grain"),
+        t1: $("#t1"), c1: $("#caret1"), t2: $("#t2"), c2: $("#caret2"), t4: $("#t4"), c4: $("#caret4"),
+        spinners: $$(".spinner, #p-spin"),
+        sheens: $$(".sheen"),
+        count: $("#p-count"),
+        orbs: [0, 1, 2, 3, 4, 5, 6].map((i) => $("#orb" + i)),
+        lines: [0, 1, 2, 3, 4, 5, 6].map((i) => $("#ln" + i)),
+      };
+      const T1 = "small habits that fixed my whole routine";
+      const T2 = " sipping an iced matcha, pouty close-up selfie";
+      const DEV = [1, 2, 3, 4, 5].map((k) => C2 + k * B); // one slide develops per beat
+      const typed = (t, t0, dur, str) => str.slice(0, Math.floor(clamp01((t - t0) / dur) * str.length + 1e-6));
+      const blink = (t) => t % 0.5 < 0.28;
+
+      const ORB = { cx: 960, cy: 500, rx: 640, ry: 250 };
+      function frame(t) {
+        // Film grain: stepped, seeded jitter at 24 steps per second
+        const g = Math.floor(t * 24);
+        EL.grain.style.transform = "translate(" + ((prand(g) * 2 - 1) * 120).toFixed(1) + "px," + ((prand(g + 99) * 2 - 1) * 120).toFixed(1) + "px)";
+
+        // S2 composer typing
+        EL.t1.textContent = typed(t, S2(0.0612), 0.85, T1);
+        EL.c1.style.opacity = t >= S2(0.0503) && t < S2(0.5564) ? (t < S2(0.5237) || blink(t) ? 1 : 0) : 0;
+        EL.t2.textContent = typed(t, S2(0.5237), 0.48, T2);
+        EL.c2.style.opacity = t >= S2(0.502) && t < S2(0.872) ? (t < S2(0.785) || blink(t) ? 1 : 0) : 0;
+
+        // S3 skeleton spinners, sheens and counter
+        const rot = (t * 420) % 360;
+        EL.spinners.forEach((s) => (s.style.transform = "rotate(" + rot.toFixed(1) + "deg)"));
+        EL.sheens.forEach((s, i) => {
+          const p = (t * 0.95 + i * 0.19) % 1;
+          s.style.transform = "translateX(" + (-110 + p * 300).toFixed(1) + "%)";
+        });
+        let n = 0;
+        DEV.forEach((d) => (n += t >= d ? 1 : 0));
+        EL.count.textContent = n + "/5";
+
+        // S3 sparkle burst out of the Generate button (ballistic, pure function of time)
+        const FL = 1.25, G = 1500, T = t - C2;
+        PARTS.forEach((p) => {
+          if (T <= 0 || T >= FL) {
+            p.el.style.opacity = 0;
+            return;
+          }
+          const x = p.vx * T * (1 - 0.3 * T);
+          const y = p.vy * T * (1 - 0.3 * T) + 0.5 * G * T * T;
+          const sc = 1 - 0.55 * (T / FL);
+          p.el.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) rotate(" + (p.spin * T).toFixed(1) + "deg) scale(" + sc.toFixed(3) + ")";
+          p.el.style.opacity = Math.min(1, (FL - T) / (FL * 0.45)).toFixed(3);
+        });
+
+        // S4 phone text retyping
+        EL.t4.textContent = t < C3 ? T1 : typed(t, C3 + 0.12, 0.55, T1);
+        EL.c4.style.opacity = t >= C3 + 0.08 && t < C3 + 1.2 ? (t < C3 + 0.67 || blink(t) ? 1 : 0) : 0;
+
+        // S5 orbit, tether lines and implosion
+        const OT = Math.max(0, t - C4);
+        const q = clamp01((t - (C5 - 0.3)) / 0.28);
+        const qi = q * q * q;
+        const rf = 1 - qi * 0.97;
+        EL.orbs.forEach((o, i) => {
+          const a = -Math.PI / 2 + 0.22 + (i * Math.PI * 2) / 7 + 0.32 * OT;
+          const sa = Math.sin(a);
+          const x = ORB.cx + ORB.rx * rf * Math.cos(a);
+          const y = ORB.cy + ORB.ry * rf * sa;
+          const sc = (0.8 + 0.26 * ((1 + sa) / 2)) * (1 - 0.65 * qi);
+          o.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) scale(" + sc.toFixed(3) + ")";
+          o.style.zIndex = sa > 0 ? 6 : 3;
+          o.style.opacity = (1 - qi).toFixed(3);
+          const dp = easeOut3(clamp01((t - (C4 + 0.24 + i * 0.045)) / 0.4));
+          const ln = EL.lines[i];
+          ln.setAttribute("x2", (ORB.cx + (x - ORB.cx) * dp).toFixed(1));
+          ln.setAttribute("y2", (ORB.cy + (y - ORB.cy) * dp).toFixed(1));
+          ln.setAttribute("stroke-dashoffset", (-t * 38).toFixed(1));
+          ln.setAttribute("opacity", (0.8 * (1 - qi)).toFixed(3));
+        });
+      }
+
+      /* ---- One clock drives every procedural layer ---- */
+      const clock = { t: 0 };
+      tl.fromTo(clock, { t: 0 }, { t: END, duration: END, ease: "none", onUpdate: () => frame(clock.t) }, 0);
+      frame(0);
+
+      /* ================= HUD ================= */
+      tl.fromTo("#hud-brand", { y: -26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.34);
+      tl.fromTo("#hud-scene", { y: -26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }, 0.42);
+      tl.set(".tickwin b", { y: 0 }, 0);
+      [C1, C2, C3, C4].forEach((t, k) => {
+        tl.fromTo(["#tn" + k, "#tl" + k], { y: 0, opacity: 1 }, { y: -30, opacity: 0, duration: 0.32, ease: "power2.in", immediateRender: false }, t);
+        tl.fromTo(["#tn" + (k + 1), "#tl" + (k + 1)], { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "expo.out", immediateRender: false }, t + 0.08);
+      });
+      tl.set("#hud", { opacity: 0 }, C5 + 0.012);
+
+      /* ================= S1: burst out of the cloud, "Got an idea?" ================= */
+      tl.fromTo("#s1-white", { opacity: 1 }, { opacity: 0, duration: 0.34, ease: "power2.in" }, 0.02);
+      tl.fromTo("#s1-thru", { scale: 1.25, y: 40 }, { scale: 3.6, y: -320, duration: 1.0, ease: "power2.out" }, 0);
+      tl.fromTo("#s1-thru", { opacity: 1 }, { opacity: 0, duration: 0.85, ease: "power1.in", immediateRender: false }, 0.02);
+      tl.fromTo("#s1-puffL", { x: 0, scale: 1.15, opacity: 1 }, { x: -860, scale: 2.4, opacity: 0, duration: 1.0, ease: "power2.out" }, 0);
+      tl.fromTo("#s1-puffR", { x: 0, y: 0, scale: 1.1, opacity: 1 }, { x: 900, y: -160, scale: 2.5, opacity: 0, duration: 1.05, ease: "power2.out" }, 0);
+      tl.fromTo("#s1-cam", { scale: 1.16, y: 50 }, { scale: 1, y: 0, duration: 2.0, ease: "power2.out" }, 0);
+      tl.fromTo("#s1-wisp", { x: 0 }, { x: -150, duration: 2.0, ease: "none" }, 0);
+      tl.fromTo("#s1-bankbg", { x: 0 }, { x: -100, duration: 2.0, ease: "none" }, 0);
+      tl.fromTo("#s1-head", { x: 0 }, { x: -26, duration: 1.9, ease: "none" }, 0);
+      tl.fromTo("#w-got", { scale: 1.7, opacity: 0, filter: "blur(18px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power4.out" }, 0.28);
+      tl.fromTo("#w-an", { x: 240, opacity: 0, filter: "blur(14px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 0.52);
+      tl.fromTo("#w-idea", { y: 150, rotation: 7, opacity: 0 }, { y: 0, rotation: 0, opacity: 1, duration: 0.55, ease: "circ.out" }, B * 2);
+      tl.fromTo("#s1-dot", { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.6, ease: "back.out(3)" }, 1.1);
+
+      /* S1 -> S2: zoom through the headline into the composer */
+      tl.fromTo("#s1-zoom", { scale: 1, filter: "blur(0px)" }, { scale: 1.55, filter: "blur(18px)", duration: 0.3, ease: "power3.in" }, C1 - 0.3);
+      tl.fromTo("#s2", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, C1 - 0.06);
+      tl.fromTo("#s2-zoom", { scale: 0.72, filter: "blur(16px)" }, { scale: 1, filter: "blur(0px)", duration: 0.62, ease: "expo.out" }, C1 - 0.06);
+      tl.set("#s1", { opacity: 0 }, C1 + 0.08);
+
+      /* ================= S2: type the slide, press Generate ================= */
+      tl.fromTo("#s2-cam", { scale: 1, rotationX: 8, y: 16, transformPerspective: 1800 }, { scale: 1.035, rotationX: 2, y: 0, duration: C2 - C1 + 0.1, ease: "power1.inOut" }, C1);
+      tl.fromTo("#s2-cl1", { x: 0 }, { x: 120, duration: C2 - C1 + 0.1, ease: "none" }, C1);
+      tl.fromTo("#s2-cl2", { x: 0 }, { x: -140, duration: C2 - C1 + 0.1, ease: "none" }, C1);
+      tl.fromTo("#comp .c-row", { y: 18, opacity: 0, filter: "blur(6px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.5, ease: "power3.out", stagger: 0.055 }, C1 + 0.02);
+      const ACTIVE = { borderColor: "#3b82f6", backgroundColor: "#ffffff", boxShadow: "0 0 0 7px rgba(59,130,246,0.16)" };
+      const IDLE = { borderColor: "#dde5ed", backgroundColor: "#f7f9fc", boxShadow: "0 0 0 0px rgba(59,130,246,0)" };
+      tl.fromTo("#in1", IDLE, { ...ACTIVE, duration: 0.2, ease: "power2.out" }, S2(0.0503));
+      tl.fromTo("#in1", ACTIVE, { ...IDLE, duration: 0.25, ease: "power2.out", immediateRender: false }, S2(0.5564));
+      tl.fromTo("#pbox", { borderColor: "#dde5ed", boxShadow: "0 0 0 0px rgba(59,130,246,0)" }, { borderColor: "#3b82f6", boxShadow: "0 0 0 7px rgba(59,130,246,0.16)", duration: 0.2, ease: "power2.out" }, S2(0.4802));
+      tl.fromTo("#ref1", { scale: 0, rotation: -12 }, { scale: 1, rotation: 0, duration: 0.45, ease: "back.out(2.2)" }, S2(0.2516));
+      tl.fromTo("#mention", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2.5)" }, S2(0.4911));
+      tl.fromTo("#cursor", { x: 1980, y: 1180, rotation: -14 }, { x: 1361, y: 797, rotation: 0, duration: 0.5, ease: "power3.out" }, S2(0.589));
+      tl.fromTo("#gen-btn", { filter: "brightness(1)" }, { filter: "brightness(1.12)", duration: 0.15, ease: "power1.out" }, S2(0.7958));
+      tl.fromTo(["#gen-btn", "#cursor"], { scale: 1 }, { scale: 0.92, duration: 0.14, ease: "power2.in" }, S2(0.872));
+      tl.fromTo(["#gen-btn", "#cursor"], { scale: 0.92 }, { scale: 1, duration: 0.5, ease: "back.out(3)", immediateRender: false }, C2);
+      tl.fromTo("#ripple1", { scale: 0.4, opacity: 0.95 }, { scale: 3.4, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, C2 - 0.02);
+      tl.fromTo("#ripple2", { scale: 0.4, opacity: 0.8 }, { scale: 4.2, opacity: 0, duration: 0.65, ease: "power2.out", immediateRender: false }, C2 + 0.06);
+      tl.fromTo("#s2-cam", { filter: "brightness(1)" }, { filter: "brightness(1.9)", duration: 0.16, ease: "power2.in", immediateRender: false }, C2 - 0.12);
+
+      /* S2 -> S3: the drop. Flash out of the button */
+      tl.fromTo("#flash", { opacity: 0 }, { opacity: 0.96, duration: 0.07, ease: "power2.in" }, C2 - 0.04);
+      tl.fromTo("#flash", { opacity: 0.96 }, { opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, C2 + 0.05);
+      tl.set("#s3", { opacity: 1 }, C2 + 0.02);
+      tl.set("#s2", { opacity: 0 }, C2 + 0.04);
+
+      /* ================= S3: five slides burst out and develop on the beat ================= */
+      tl.fromTo("#s3-bgwrap", { scale: 1.2 }, { scale: 1.06, duration: C3 - C2, ease: "sine.out" }, C2);
+      tl.fromTo("#s3-cl", { x: 0 }, { x: -160, duration: C3 - C2, ease: "none" }, C2);
+      tl.fromTo("#s3-cl2", { x: 0 }, { x: 120, duration: C3 - C2, ease: "none" }, C2);
+      tl.fromTo("#s3-world", { rotationX: 9, rotationY: 5, z: -160, y: 24 }, { rotationX: 3, rotationY: -5, z: 30, y: 0, duration: C3 - C2, ease: "sine.inOut" }, C2);
+      SLOTS.forEach((s, i) => {
+        const delay = (Math.abs(s.cx - 1343) / 1200) * 0.16;
+        const at = C2 + 0.02 + delay;
+        tl.fromTo("#card" + i, { x: 1343 - s.cx, y: 789 - (s.top + 338), z: -520, scale: 0.12, rotationZ: (i - 2) * 22, rotationY: 0 }, { x: 0, y: 0, z: s.z, scale: 1, rotationZ: s.rz, rotationY: s.ry, duration: 0.9, ease: "expo.out" }, at);
+        tl.fromTo("#card" + i, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, at);
+        tl.fromTo("#card" + i + " .card-in", { filter: "blur(16px)" }, { filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, at);
+        const td = DEV[i];
+        tl.fromTo("#card" + i + " .cflash", { opacity: 0 }, { opacity: 0.95, duration: 0.05, ease: "none" }, td);
+        tl.fromTo("#card" + i + " .cflash", { opacity: 0.95 }, { opacity: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, td + 0.06);
+        tl.set("#card" + i + " .skel", { opacity: 0 }, td + 0.05);
+        tl.fromTo("#card" + i + " .shot", { opacity: 0, scale: 1.14 }, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, td + 0.03);
+        tl.fromTo("#card" + i + " .stext span", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.32, ease: "back.out(2)", stagger: 0.03 }, td + 0.13);
+        tl.fromTo("#card" + i + " .cchip", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: "back.out(2.5)" }, td + 0.1);
+        tl.fromTo("#p-fill", { scaleX: i / 5 }, { scaleX: (i + 1) / 5, duration: 0.28, ease: "power3.out", immediateRender: i === 0 }, td);
+      });
+      tl.fromTo("#s3-pill", { y: 44, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.8)" }, C2 + 0.24);
+      const READY = DEV[4] + 0.1;
+      tl.set("#p-spin", { opacity: 0 }, READY);
+      tl.set("#p-gen", { opacity: 0 }, READY);
+      tl.fromTo("#p-check", { scale: 0, opacity: 1 }, { scale: 1, opacity: 1, duration: 0.42, ease: "back.out(3)" }, READY);
+      tl.fromTo("#p-ready", { opacity: 0, x: 10 }, { opacity: 1, x: 0, duration: 0.3, ease: "power2.out" }, READY);
+
+      /* S3 -> S4: whip pan, velocity matched at the cut */
+      tl.fromTo("#s3-whip", { x: 0, filter: "blur(0px)" }, { x: -820, filter: "blur(26px)", duration: 0.24, ease: "power3.in" }, C3 - 0.24);
+      tl.set("#s4", { opacity: 1 }, C3 - 0.01);
+      tl.set("#s3", { opacity: 0 }, C3 + 0.01);
+      tl.fromTo("#s4-whip", { x: 1435, filter: "blur(26px)" }, { x: 0, filter: "blur(0px)", duration: 0.42, ease: "power3.out" }, C3 - 0.01);
+
+      /* ================= S4: your copy, your style, every slide ================= */
+      tl.fromTo("#s4-bgwrap", { scale: 1.08 }, { scale: 1, duration: C4 - C3, ease: "sine.out" }, C3);
+      tl.fromTo("#s4-cl", { x: 0 }, { x: 140, duration: C4 - C3, ease: "none" }, C3);
+      tl.fromTo("#s4-wisp", { x: 0 }, { x: -180, duration: C4 - C3, ease: "none" }, C3);
+      tl.fromTo("#phone-wrap", { rotationY: 18, rotationX: 6, y: 24, transformPerspective: 1600 }, { rotationY: 8, rotationX: 2, y: -8, duration: C4 - C3, ease: "sine.inOut" }, C3);
+      const S_UGC = C3 + 2 * B, S_GTA = C3 + 3 * B, S_MC = C3 + 4 * B, S_BACK = C3 + 5 * B;
+      const SW1 = C3 + 6 * B, SW2 = C3 + 6.5 * B, SW3 = C3 + 7 * B;
+      tl.fromTo("#l1", { scale: 1.5, opacity: 0, filter: "blur(16px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.46, ease: "power4.out" }, C3 + 0.1);
+      tl.fromTo("#l2", { x: 280, opacity: 0, filter: "blur(12px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.42, ease: "expo.out" }, S_UGC);
+      tl.fromTo("#l1", { opacity: 1 }, { opacity: 0.26, duration: 0.3, ease: "power2.out", immediateRender: false }, S_UGC);
+      tl.fromTo("#chips .chip", { y: 26, opacity: 0, scale: 0.8 }, { y: 0, opacity: 1, scale: 1, duration: 0.42, ease: "back.out(2)", stagger: 0.05 }, S_UGC + 0.07);
+      tl.fromTo("#l3", { y: 130, rotation: 6, opacity: 0 }, { y: 0, rotation: 0, opacity: 1, duration: 0.5, ease: "circ.out" }, SW1);
+      tl.fromTo("#l2", { opacity: 1 }, { opacity: 0.26, duration: 0.3, ease: "power2.out", immediateRender: false }, SW1);
+      // Same slide, three styles: hard cuts on the beat
+      const chipOn = (i, on, t) => {
+        tl.set("#ch" + i + " .chip-on", { opacity: on ? 1 : 0 }, t);
+        tl.set("#ch" + i + " span", { color: on ? "#ffffff" : "#1d1d1d" }, t);
+      };
+      chipOn(0, true, S_UGC + 0.1);
+      chipOn(0, false, S_GTA);
+      chipOn(1, true, S_GTA);
+      tl.set("#pv1", { opacity: 1 }, S_GTA);
+      chipOn(1, false, S_MC);
+      chipOn(2, true, S_MC);
+      tl.set("#pv2", { opacity: 1 }, S_MC);
+      chipOn(2, false, S_BACK);
+      chipOn(0, true, S_BACK);
+      tl.set(["#pv1", "#pv2"], { opacity: 0 }, S_BACK);
+      tl.set("#pn0", { scale: 1 }, 0);
+      [S_GTA, S_MC, S_BACK].forEach((t, k) => {
+        tl.fromTo("#pn0", { scale: 1.08 }, { scale: 1, duration: 0.36, ease: "power3.out", immediateRender: false }, t);
+        tl.fromTo("#scr-flash", { opacity: 0.7 }, { opacity: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, t);
+        tl.fromTo(["#ch0 .chip-on", "#ch1 .chip-on", "#ch2 .chip-on"][[1, 2, 0][k]], { scale: 1.12 }, { scale: 1, duration: 0.34, ease: "back.out(2.4)", immediateRender: false }, t);
+      });
+      // Every slide: swipe through the slideshow
+      tl.set("#dot0", { backgroundColor: "#ffffff" }, 0);
+      tl.set("#strip", { x: 0 }, 0);
+      [SW1, SW2, SW3].forEach((t, k) => {
+        tl.fromTo("#strip", { x: -416 * k }, { x: -416 * (k + 1), duration: 0.2, ease: "power3.inOut", immediateRender: false }, t);
+        tl.set("#pn" + (k + 1), { opacity: 1 }, t - 0.02);
+        tl.set("#pn" + k, { opacity: 0 }, t + 0.21);
+        tl.set("#dot" + k, { backgroundColor: "rgba(255,255,255,0.45)" }, t + 0.12);
+        tl.set("#dot" + (k + 1), { backgroundColor: "#ffffff" }, t + 0.12);
+      });
+
+      /* S4 -> S5: the cloud wipe (the signature move) */
+      tl.fromTo("#wipe", { x: 1920, filter: "blur(4px)" }, { x: -6000, filter: "blur(4px)", duration: 0.9, ease: "power2.inOut" }, C4 - 0.475);
+      tl.set("#s5", { opacity: 1 }, C4);
+      tl.set("#s4", { opacity: 0 }, C4 + 0.01);
+
+      /* ================= S5: promo slides for every campaign ================= */
+      tl.fromTo("#s5-bgwrap", { scale: 1.12 }, { scale: 1.02, duration: C5 - C4 + 0.1, ease: "sine.out" }, C4);
+      tl.fromTo("#s5-cl", { x: 0 }, { x: 110, duration: C5 - C4, ease: "none" }, C4);
+      tl.fromTo("#s5-cl2", { x: 0 }, { x: -110, duration: C5 - C4, ease: "none" }, C4);
+      tl.fromTo("#hub-bloom", { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" }, C4 + 0.04);
+      tl.fromTo("#hub", { scale: 0.5, opacity: 0, rotation: -24 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.62, ease: "back.out(2)" }, C4 + 0.06);
+      tl.fromTo(".orb-in", { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.5, ease: "back.out(2.2)", stagger: 0.045 }, C4 + 0.14);
+      tl.fromTo("#s5-cap .cw", { y: 70, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.55, ease: "expo.out", stagger: 0.06 }, C4 + 0.32);
+      tl.fromTo("#hub", { scale: 1 }, { scale: 1.32, duration: 0.3, ease: "power2.in", immediateRender: false }, C5 - 0.3);
+
+      /* S5 -> S6: implode into a white bloom, the music stops on the hit */
+      tl.fromTo("#bloom", { scale: 0, opacity: 1 }, { scale: 9.5, opacity: 1, duration: 0.28, ease: "power3.in" }, C5 - 0.27);
+      tl.set("#s6", { opacity: 1 }, C5 + 0.012);
+      tl.set("#s5", { opacity: 0 }, C5 + 0.02);
+      tl.fromTo("#bloom", { scale: 9.5, opacity: 1 }, { scale: 12.5, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false }, C5 + 0.05);
+
+      /* ================= S6: the lockup in the pastoral world ================= */
+      tl.fromTo("#s6-cam", { scale: 1.14, y: -30 }, { scale: 1, y: 0, duration: END - C5, ease: "power2.out" }, C5);
+      tl.fromTo("#s6-wisp", { x: 0 }, { x: 120, duration: END - C5, ease: "none" }, C5);
+      tl.fromTo("#s6-glow", { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" }, C5);
+      tl.fromTo("#s6-puffL", { x: 0, scale: 1.2, opacity: 1 }, { x: -1000, scale: 2.4, opacity: 0, duration: 0.95, ease: "power2.out" }, C5);
+      tl.fromTo("#s6-puffR", { x: 0, y: 0, scale: 1.2, opacity: 1 }, { x: 1000, y: -120, scale: 2.4, opacity: 0, duration: 0.95, ease: "power2.out" }, C5);
+      tl.fromTo("#hill-l", { y: 440 }, { y: 0, duration: 0.95, ease: "power3.out" }, C5 + 0.05);
+      tl.fromTo("#hill-r", { y: 440 }, { y: 0, duration: 0.95, ease: "power3.out" }, C5 + 0.12);
+      tl.fromTo("#l-star", { scale: 0, rotation: -70 }, { scale: 1, rotation: 0, duration: 0.72, ease: "back.out(2.2)" }, C5 + 0.12);
+      tl.fromTo("#l-star", { y: 0 }, { y: -9, duration: 0.55, ease: "sine.inOut", yoyo: true, repeat: 1, immediateRender: false }, C5 + 1.037);
+      tl.fromTo("#l-glint", { scale: 0, rotation: 0 }, { scale: 1, rotation: 90, duration: 0.26, ease: "power2.out" }, C5 + 0.437);
+      tl.fromTo("#l-glint", { scale: 1, rotation: 90 }, { scale: 0, rotation: 180, duration: 0.36, ease: "power2.in", immediateRender: false }, C5 + 0.697);
+      tl.fromTo("#l-word .lt", { yPercent: 115 }, { yPercent: 0, duration: 0.72, ease: "expo.out", stagger: 0.032 }, C5 + 0.2);
+      tl.fromTo("#l-tag", { y: 18, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.6, ease: "power3.out" }, C5 + 0.62);
+      tl.fromTo("#cta-pill", { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.9)" }, C5 + 0.917);
+      tl.fromTo("#url-pill", { scale: 0.55, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(1.9)" }, C5 + 0.997);
+      tl.fromTo("#cta-shine", { xPercent: -160 }, { xPercent: 300, duration: 0.62, ease: "power2.inOut" }, C5 + 1.2);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

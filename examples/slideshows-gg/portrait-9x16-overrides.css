@@ -1,0 +1,97 @@
+      /* ================= 9:16 Instagram Stories layout =================
+         Key content stays inside y 250..1600 (clear of the Stories header and reply bar). */
+      .br { flex-basis: 100%; height: 0; }
+      .mist { height: 420px; }
+
+      #s1-zoom { transform-origin: 50% 46%; }
+      #s1-wisp { left: -700px; top: 1180px; width: 2000px; }
+      #s1-bankbg { right: -900px; bottom: -520px; width: 2100px; }
+      #s1-glow { left: -300px; top: 460px; width: 1700px; height: 1000px; }
+      #s1-head { left: 84px; top: 640px; font-size: 262px; flex-wrap: wrap; width: 980px; column-gap: 0.2em; row-gap: 0; }
+      #s1-thru { width: 3600px; margin-left: -1800px; margin-top: -1100px; }
+      #s1-puffL { left: -620px; top: 900px; width: 1400px; }
+      #s1-puffR { right: -640px; top: -80px; width: 1450px; }
+
+      #s2-cl1 { left: -900px; top: 1300px; width: 2200px; }
+      #s2-cl2 { right: -700px; top: 240px; width: 1700px; }
+      #comp { left: 60px; top: 564px; width: 960px; padding: 44px 48px; gap: 34px; }
+      .c-head { height: 56px; }
+      .c-num { height: 48px; font-size: 26px; padding: 0 20px; }
+      .c-title { font-size: 34px; }
+      .c-promo { font-size: 28px; }
+      .tog { width: 74px; height: 42px; }
+      .tog i { width: 34px; height: 34px; }
+      .c-label { font-size: 26px; }
+      .c-hint { font-size: 22px; }
+      .c-input { height: 100px; font-size: 34px; padding: 0 24px; }
+      .caret { height: 44px; }
+      .c-prompt { padding: 20px; height: 258px; }
+      .c-refs { height: 104px; }
+      .ref, .ref-add { width: 104px; height: 104px; }
+      .c-ptext { display: block; height: 92px; font-size: 34px; line-height: 46px; white-space: pre-wrap; }
+      .mention { margin-right: 0; }
+      .c-foot { height: 100px; }
+      .c-meta { font-size: 24px; }
+      #gen-btn { width: 380px; height: 100px; font-size: 36px; }
+      .ripple { left: 722px; top: 1202px; }
+
+      .card { width: 300px; height: 533px; }
+      .card-in { border-radius: 26px; }
+      .skel-lbl { top: 226px; font-size: 22px; }
+      .stext { left: 18px; right: 18px; font-size: 28px; }
+      .cchip { font-size: 16px; height: 32px; left: 14px; top: 14px; }
+      .pt { left: 782px; top: 1262px; }
+      #s3-cl { right: -1000px; bottom: -520px; width: 2300px; }
+      #s3-cl2 { left: -1100px; bottom: -460px; width: 2200px; }
+      #s3-glow { left: -260px; top: 300px; width: 1600px; height: 1300px; }
+      #s3-pill { top: 1484px; bottom: auto; width: 640px; margin-left: -320px; height: 84px; }
+      .p-txt { width: 280px; font-size: 28px; }
+
+      #s4-cl { left: -1000px; bottom: -560px; width: 2300px; }
+      #s4-wisp { right: -760px; top: 260px; width: 1800px; }
+      #s4-glow { left: -140px; top: 1000px; width: 1360px; height: 760px; }
+      #phone-scale { position: absolute; left: 318px; top: 338px; width: 444px; height: 888px; transform: scale(0.86); transform-origin: 50% 0%; }
+      #phone-wrap { left: 0; top: 0; }
+      #stack { left: 0; top: 1132px; width: 1080px; display: flex; flex-direction: column; align-items: center; }
+      .line { font-size: 98px; line-height: 1.02; transform-origin: 50% 60%; }
+      #chips { margin-top: 30px; justify-content: center; }
+      .chip { height: 72px; font-size: 29px; }
+
+      #wipe { top: -120px; height: 2160px; }
+      #wipe-core { height: 2160px; }
+      #wipe-a { top: 60px; width: 3600px; left: 100px; }
+      #wipe-b { top: 40px; width: 3600px; left: 3300px; }
+      #wipe-c { top: -300px; width: 1800px; }
+      #wipe-d { top: 1500px; width: 1900px; }
+
+      #s5-cl { left: -1000px; bottom: -520px; width: 2300px; }
+      #s5-cl2 { right: -1000px; bottom: -560px; width: 2300px; }
+      #s5-mist { height: 760px; }
+      #hub { left: 420px; top: 720px; width: 240px; height: 240px; }
+      #hub-bloom { left: 190px; top: 490px; width: 700px; height: 700px; }
+      #s5-cap { top: 1262px; flex-wrap: wrap; font-size: 108px; line-height: 1.02; column-gap: 0.24em; padding: 0 60px; }
+      #bloom { left: 340px; top: 640px; }
+
+      #s6-bg { object-position: 50% 50%; }
+      #s6-wisp { left: -700px; top: 140px; width: 2000px; }
+      #s6-glow { left: -260px; top: 260px; width: 1600px; height: 1000px; }
+      #lockup { top: 372px; flex-direction: column; gap: 18px; }
+      #l-starwrap, #l-star { width: 210px; height: 210px; }
+      #l-glint { width: 74px; height: 74px; }
+      #l-word { font-size: 176px; }
+      #l-tag { top: 872px; font-size: 42px; }
+      #l-cta { top: 968px; }
+      #hill-l { left: -150px; bottom: -80px; width: 900px; }
+      #hill-r { right: -150px; bottom: -80px; width: 900px; }
+      #s6-puffL { left: -700px; top: 700px; width: 1500px; }
+      #s6-puffR { right: -700px; top: 60px; width: 1500px; }
+
+      #hud-brand { top: 246px; left: 54px; height: 74px; }
+      #hud-brand img { width: 52px; height: 52px; }
+      #hud-brand span { font-size: 34px; }
+      #hud-scene { top: 246px; right: 54px; height: 74px; font-size: 25px; padding: 0 26px; }
+      .tickwin, .tickwin b { height: 34px; line-height: 34px; }
+      #tick-numwin { width: 38px; }
+      #tick-lblwin { width: 152px; }
+      #flash { background: radial-gradient(circle at 782px 1262px, #ffffff 0%, #ffffff 34%, rgba(236, 245, 255, 0.97) 70%, rgba(214, 232, 255, 0.94) 100%); }
+      #grain { width: 1480px; height: 2320px; }
